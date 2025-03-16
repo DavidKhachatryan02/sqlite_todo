@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  subtasks    Task[]     @relation("Subtasks")
+  parentId    String?
+  parent      Task?      @relation("Subtasks", fields: [parentId], references: [id])
+  createdAt   DateTime   @default(now())
+}
